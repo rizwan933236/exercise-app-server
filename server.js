@@ -37,7 +37,10 @@ app.use("/excercise",(req,res,next)=>{
 //for User Resgistration 
 app.post("/register", async (req, res) => {
     const { name, email, password } = req.body;
-    console.log(req.body)
+    if(req.body == null){
+    res.status(400).send("Invalid Credentials")
+  }
+  else
     try {
       const user = await User.findOne({ email });
      console.log("user")
@@ -63,7 +66,6 @@ app.post("/register", async (req, res) => {
 //fro User Login
 app.post("/login",async (req,res)=>{
     const {email,password} = req.body
-    console.log(req.body)
 
     const result  = await User.findOne({email:email,password:password})
 
@@ -72,7 +74,7 @@ app.post("/login",async (req,res)=>{
     }
     else{
         const Token = JWT.sign({id:result["_id"]},SKey)
-        res.send({Token:Token})
+        res.status(200).send({Token:Token})
     }
 })
 
@@ -85,6 +87,7 @@ app.post("/excercise/addexcercise",async (req,res)=>{
         await User.findByIdAndUpdate(UserId,{$push:{exercises: result["_id"]}})
 
         res.send({
+            status:(200),
             message:"Excercise Added"
         })
 
@@ -98,17 +101,17 @@ app.post("/excercise/addexcercise",async (req,res)=>{
 })
 
 
-//for Showing excercise data
+//for get all excercise data 
 app.get("/excercise/getexcercise",async (req,res)=>{
     const UserId = req.data.id
     const result = await User.findById(UserId).populate("exercises")
 
-    res.send({exercises:result.exercises})
+    res.status(200).send({exercises:result.exercises})
 })
 
 
 
-//for Showing excercise data
+//for Get excercise data by id
 app.get("/excercise/getexcercise/:id",async (req,res)=>{
   const exid = req.params.id
   const result = await Excercise.findById(exid)
@@ -120,7 +123,7 @@ app.get("/excercise/getexcercise/:id",async (req,res)=>{
 app.put("/excercise/editExcercise/:id",async(req,res)=>{
  
   try {
-    // console.log("this is id  :"+id)
+    
     const exercise = await Excercise.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
