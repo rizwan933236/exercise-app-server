@@ -43,15 +43,19 @@ app.post("/register", async (req, res) => {
   else
     try {
       const user = await User.findOne({ email });
-     console.log("user")
-     console.log(user)
+    
       if (user) {
         // User is already registered
         res.status(409).send({ message: "User already registered" });
       } else {
         // Create a new user
+         
         const result = await User.create({ name, email, password });
-      
+       if(result == null){
+           res.status(400).send({
+          message: "Invalid credentials",
+        });
+       }else 
         res.status(200).send({
           message: "Register Successful",
           User: result,
