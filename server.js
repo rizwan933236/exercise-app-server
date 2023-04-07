@@ -118,14 +118,25 @@ app.get("/excercise/getexcercise/:id", async (req, res) => {
 })
 
 // for showing pie chart exercises 
-app.get('/pie/exercises', (req, res) => {
-  Excercise.aggregate([
-    { $group: { _id: '$type', totalDuration: { $sum: '$duration' }, count: { $sum: 1 } } }
-  ])
-    .then(exercises => res.json(exercises))
-    .catch(error => {
-      res.sendStatus(500);
-    });
+app.get('/pie/exercises', async (req, res) => {
+//   Excercise.aggregate([
+//     { $group: { _id: '$type', totalDuration: { $sum: '$duration' }, count: { $sum: 1 } } }
+//   ])
+//     .then(exercises => res.json(exercises))
+//     .catch(error => {
+//       res.sendStatus(500);
+//     });
+ try {
+    const userId = req.params.userId;
+    const result = await Excercise.aggregate([
+      { $match: { User: mongoose.Types.ObjectId(UserId) } },
+      { $group: { _id: '$type', totalDuration: { $sum: '$duration' } } },
+      { $project: { _id: 0, type: '$_id', duration: '$totalDuration', typeField: '$type' } }
+    ]);
+    res.json(result);
+  } catch (error) {
+    res.sendStatus(500);
+  }
 });
 
 //for editing existing excercise data
