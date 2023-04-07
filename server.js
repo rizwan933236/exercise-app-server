@@ -119,24 +119,24 @@ app.get("/excercise/getexcercise/:id", async (req, res) => {
 
 // for showing pie chart exercises 
 app.get('/pie/exercises', async (req, res) => {
-//   Excercise.aggregate([
-//     { $group: { _id: '$type', totalDuration: { $sum: '$duration' }, count: { $sum: 1 } } }
-//   ])
-//     .then(exercises => res.json(exercises))
-//     .catch(error => {
-//       res.sendStatus(500);
-//     });
+  Excercise.aggregate([
+    { $group: { _id: '$type', totalDuration: { $sum: '$duration' }, count: { $sum: 1 } } }
+  ])
+    .then(exercises => res.json(exercises))
+    .catch(error => {
+      res.sendStatus(500);
+    });
 
-  try {
-    const userId = req.params.userId;
-    const exercises = await Excercise.aggregate([
-      { $match: { user: mongoose.Types.ObjectId(userId) } },
-      { $group: { _id: '$type', totalDuration: { $sum: '$duration' }, count: { $sum: 1 } } }
-    ]);
-    res.json(exercises);
-  } catch (error) {
-    res.sendStatus(500);
-  }
+//   try {
+//     const userId = req.params.userId;
+//     const exercises = await Excercise.aggregate([
+//       { $match: { user: mongoose.Types.ObjectId(userId) } },
+//       { $group: { _id: '$type', totalDuration: { $sum: '$duration' }, count: { $sum: 1 } } }
+//     ]);
+//     res.json(exercises);
+//   } catch (error) {
+//     res.sendStatus(500);
+//   }
 
 
 });
