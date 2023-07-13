@@ -118,7 +118,7 @@ app.get("/excercise/getexcercise/:id", async (req, res) => {
 })
 
 // for showing pie chart exercises 
-app.get('/pie/exercises', async (req, res) => {
+app.get('/excercise/pie/exercises', async (req, res) => {
   Excercise.aggregate([
     { $group: { _id: '$type', totalDuration: { $sum: '$duration' }, count: { $sum: 1 } } }
   ])
